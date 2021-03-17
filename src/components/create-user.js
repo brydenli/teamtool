@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 const CreateUser = () => {
 	const [username, setUsername] = useState('');
@@ -24,6 +25,12 @@ const CreateUser = () => {
 	};
 	const handleSubmit = (e) => {
 		e.preventDefault();
+
+		if (password.length > 10) {
+			axios.get();
+		} else {
+			alert('Your password must be at least 10 characters');
+		}
 	};
 
 	return (

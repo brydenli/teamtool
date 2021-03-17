@@ -12,10 +12,14 @@ const userSchema = new Schema({
 		lowercase: true,
 		unique: true,
 		required: true,
+		lowercase: true,
+		trim: true,
 	},
 	password: {
 		type: String,
 		required: true,
+		minlength: 6,
+		trim: true,
 	},
 	firstName: {
 		type: String,

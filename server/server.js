@@ -24,9 +24,11 @@ connection.once('open', () => {
 });
 
 //add routers
+const userRouter = require('./routes/user.routes');
 
 //use routers
+app.use('/users', userRouter);
 
 app.listen(port, () => {
-	`Server is listening at port ${port}`;
+	console.log(`Server is listening at port ${port}`);
 });

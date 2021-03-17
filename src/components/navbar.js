@@ -7,7 +7,7 @@ const NavBar = () => {
 			<h1>Navbar</h1>
 			<ul>
 				<li>
-					<h1>Link</h1>
+					<Link to='/create-user'>Create User</Link>
 				</li>
 				<li>
 					<h1>Link</h1>

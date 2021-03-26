@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 const app = express();
-const port = process.env.PORT || 3008;
+const port = process.env.PORT2 || 3009;
 
 app.use(cors());
 app.use(express.json());
@@ -24,12 +24,10 @@ connection.once('open', () => {
 });
 
 //add routers
-const userRouter = require('./routes/user.routes');
-const teamRouter = require('./routes/team.routes');
+const authRouter = require('./routes/auth.routes');
 
 //use routers
-app.use('/users', userRouter);
-app.use('/teams', teamRouter);
+app.use('/login', authRouter);
 
 app.listen(port, () => {
 	console.log(`Server is listening at port ${port}`);

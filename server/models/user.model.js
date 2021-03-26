@@ -6,6 +6,7 @@ const userSchema = new Schema({
 		type: String,
 		unique: true,
 		required: true,
+		trim: true,
 	},
 	email: {
 		type: String,
@@ -28,6 +29,14 @@ const userSchema = new Schema({
 	lastName: {
 		type: String,
 		required: true,
+	},
+
+	adminOf: {
+		type: Array,
+	},
+
+	teams: {
+		type: Array,
 	},
 });
 

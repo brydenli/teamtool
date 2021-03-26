@@ -32,7 +32,6 @@ router.route('/:id').get((req, res, next) => {
 
 router.route('/add').post((req, res, next) => {
 	try {
-		console.log('the new team is ' + req.body.users);
 		const teamName = req.body.teamName;
 		const admin = req.body.admin;
 		const users = [req.body.users];
@@ -52,16 +51,10 @@ router.route('/add').post((req, res, next) => {
 });
 
 router.route('/messages').post(verifyToken, (req, res, next) => {
-	console.log('now in messages');
 	jwt.verify(req.token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-		console.log('now in jwt verify');
-		console.log(req.token);
-		console.log('oopd ' + process.env.ACCESS_TOKEN_SECRET);
-		console.log('user' + user);
 		if (err) {
 			return res.status(403).json(`Error: ${err}`);
 		} else {
-			console.log('now in else');
 			res.json({
 				message: 'Post Created',
 				user,

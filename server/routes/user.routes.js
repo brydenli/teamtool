@@ -4,13 +4,9 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 verifyToken = (req, res, next) => {
-	console.log('unos');
-
 	const authHeader = req.headers['authorization'];
-	console.log('authheader: ' + authHeader);
 
 	const token = authHeader && authHeader.split(' ')[1];
-	console.log('token: ' + token);
 
 	req.token = token;
 	if (req.token === null) return res.sendStatus(401);
@@ -41,7 +37,6 @@ router.route('/teamlist/:id').get((req, res, next) => {
 router.route('/add').post(async (req, res, next) => {
 	try {
 		const hashedPassword = await bcrypt.hash(req.body.password, 10);
-		console.log(hashedPassword);
 		const username = req.body.username;
 		const email = req.body.email;
 		const password = hashedPassword;
@@ -66,16 +61,10 @@ router.route('/add').post(async (req, res, next) => {
 });
 
 router.route('/messages').post(verifyToken, (req, res, next) => {
-	console.log('now in messages');
 	jwt.verify(req.token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-		console.log('now in jwt verify');
-		console.log(req.token);
-		console.log('oopd ' + process.env.ACCESS_TOKEN_SECRET);
-		console.log('user' + user);
 		if (err) {
 			return res.status(403).json(`Error: ${err}`);
 		} else {
-			console.log('now in else');
 			res.json({
 				message: 'Post Created',
 				user,

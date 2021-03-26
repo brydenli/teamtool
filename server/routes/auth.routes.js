@@ -41,18 +41,13 @@ router.route('/').post((req, res, next) => {
 		User.find({ username: req.body.username })
 			.then((response) => {
 				user = response[0];
-				console.log(user);
 			})
 			.then(async () => {
 				if (user) {
-					console.log('user is ' + user);
-					console.log('req.body.password is ' + req.body.password);
-					console.log('user password is ' + user.password);
 					const compare = await bcrypt.compare(
 						req.body.password,
 						user.password
 					);
-					console.log(`Compare is ${compare}`);
 
 					if (compare) {
 						const accessToken = generateAccessToken(user);

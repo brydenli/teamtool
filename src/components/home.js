@@ -1,29 +1,122 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import axios from 'axios';
+import { AuthUserContext } from '../context/authUserContext';
+import { TeamContext } from '../context/teamContext';
+import Login from './login';
+
 const Cookies = require('js-cookie');
 
 const Home = () => {
-	const [name, setName] = useState('');
+	const {
+		authUser,
+		authUserID,
+		setAuthUser,
+		setAuthUserID,
+		authUserTeams,
+		setAuthUserTeams,
+		refresh,
+		setRefresh,
+	} = useContext(AuthUserContext);
+	const {
+		teamID,
+		newTeamName,
+		newTeamID,
+		setTeamID,
+		teamObj,
+		setTeamObj,
+	} = useContext(TeamContext);
+
+	const setObj = () => {
+		let tableObj = [];
+		for (let i = 0; i < authUserTeams.length; i++) {
+			tableObj.push({
+				authUserTeams: authUserTeams[i],
+				teamID: teamID[i],
+			});
+		}
+		setTeamObj({ tableObj });
+		console.log(teamObj);
+	};
 
 	useEffect(() => {
-		const accessToken = Cookies.get('accessToken');
-		const requestObj = {
-			accessToken: accessToken,
-		};
-		axios
-			.post('http://localhost:3009/login/detectUser', requestObj)
-			.then((res) => {
-				setName(res.data.username);
-			});
-	}, []);
+		if (!authUser || !refresh) {
+			const accessToken = Cookies.get('accessToken');
+			const requestObj = {
+				accessToken: accessToken,
+			};
+			axios
+				.post('http://localhost:3009/login/detectUser', requestObj)
+				.then((res) => {
+					console.log(res);
+					setAuthUser(res.data.username);
+					setAuthUserID(res.data.id);
+				})
+				// .then(() => {
+				// 	const teamList = { authUserTeams };
+				// 	axios
+				// 		.post('http://localhost:3008/teams/team-data', teamList)
+				// 		.then((res) => {
+				// 			console.log(res);
+				// 		});
+				// })
+				.catch((err) => {
+					console.log(`Error: ${err}`);
+				});
+		}
 
-	return (
-		<div>
-			<br />
-			<h1>Home</h1>
-			<h6>Welcome {name}</h6>
-		</div>
-	);
+		if (authUserID && refresh) {
+			// axios
+			// 	.put('http://localhost:3008/users/' + authUserID, {
+			// 		adminOf: newTeamName,
+			// 		teams: newTeamName,
+			// 		teamID: newTeamID,
+			// 	})
+			// 	.then((res) => console.log(res))
+			// 	.catch((err) => console.log(err));
+
+			axios
+				.get('http://localhost:3008/users/' + authUserID)
+				.then((res) => {
+					console.log(res);
+					setAuthUserTeams(res.data.teams);
+					setTeamID(res.data.teamID);
+					setObj();
+				})
+				.catch((err) => console.log(err));
+
+			setRefresh(false);
+		}
+	}, [
+		authUser,
+		setAuthUser,
+		authUserID,
+		setAuthUserID,
+		setAuthUserTeams,
+		refresh,
+		setRefresh,
+		newTeamName,
+		newTeamID,
+		setTeamID,
+	]);
+
+	if (authUser) {
+		return (
+			<div>
+				<br />
+				<br />
+				<br />
+
+				<h1 className='text-center display-1'>Home</h1>
+				<h6 className='text-center'> Welcome {authUser}</h6>
+				<h6 className='text-center'>authUserID: {authUserID}</h6>
+				<h6 className='text-center'>refresh: {refresh ? 'true' : 'false'}</h6>
+				<h6 className='text-center'>newTeamName: {newTeamName}</h6>
+				<h6 className='text-center'>newTeamID: {newTeamID}</h6>
+			</div>
+		);
+	} else {
+		return <Login />;
+	}
 };
 
 export default Home;

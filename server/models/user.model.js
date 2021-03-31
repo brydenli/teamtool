@@ -38,6 +38,10 @@ const userSchema = new Schema({
 	teams: {
 		type: Array,
 	},
+
+	teamID: {
+		type: Array,
+	},
 });
 
 const Users = mongoose.model('Users', userSchema);

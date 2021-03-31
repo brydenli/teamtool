@@ -50,66 +50,69 @@ const CreateUser = () => {
 	};
 
 	return (
-		<div>
+		<div className='container-sm'>
 			<br />
-			<h1>Create User</h1>
+			<h1 className='display-4 text-center'>Create User</h1>
 			<form>
+				<div class='row'>
+					<div className='col'>
+						<div className='form-group'>
+							<input
+								type='text'
+								required
+								value={firstName}
+								onChange={handleFirstName}
+								placeholder='First Name'
+								className='form-control'
+							></input>
+						</div>
+					</div>
+					<div className='col'>
+						<div className='form-group'>
+							<input
+								type='text'
+								required
+								value={lastName}
+								onChange={handleLastName}
+								placeholder='Last Name'
+								className='form-control'
+							></input>
+						</div>
+					</div>
+				</div>
 				<div className='form-group'>
-					<label>Username</label>
 					<input
 						type='text'
 						required
 						value={username}
 						onChange={handleUsername}
+						placeholder='Username'
 						className='form-control'
 					></input>
 				</div>
 				<div className='form-group'>
-					<label>Password</label>
 					<input
 						type='password'
 						required
 						value={password}
 						onChange={handlePassword}
+						placeholder='Password'
 						className='form-control'
 					></input>
 				</div>
 				<div className='form-group'>
-					<label>Email</label>
 					<input
 						type='text'
 						required
 						value={email}
 						onChange={handleEmail}
+						placeholder='Email'
 						className='form-control'
 					></input>
 				</div>
-				<div className='form-group'>
-					<label>First Name</label>
-					<input
-						type='text'
-						required
-						value={firstName}
-						onChange={handleFirstName}
-						className='form-control'
-					></input>
-				</div>
-				<div className='form-group'>
-					<label>Last Name</label>
-					<input
-						type='text'
-						required
-						value={lastName}
-						onChange={handleLastName}
-						className='form-control'
-					></input>
-				</div>
-				<div className='form-group'>
-					<button
-						type='submit'
-						className='btn btn-primary'
-						onClick={handleSubmit}
-					>
+
+				<div className='form-group text-center'>
+					<button type='submit' className='btn btn-dark' onClick={handleSubmit}>
 						Submit
 					</button>
 				</div>

@@ -1,79 +1,117 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useContext } from 'react';
 import axios from 'axios';
+import { AuthUserContext } from '../context/authUserContext';
+import { TeamContext } from '../context/teamContext';
 const Cookies = require('js-cookie');
 
 const CreateTeam = () => {
-	const [teamName, setTeamName] = useState('');
-	const [admin, setAdmin] = useState('');
-	const [userID, setUserID] = useState('');
+	const {
+		authUser,
+		setAuthUser,
+		authUserID,
+		setAuthUserID,
+		refresh,
+		setRefresh,
+	} = useContext(AuthUserContext);
+	const { newTeamName, setNewTeamName } = useContext(TeamContext);
 
 	useEffect(() => {
-		const accessToken = Cookies.get('accessToken');
-		const requestObj = {
-			accessToken: accessToken,
-		};
-		axios
-			.post('http://localhost:3008/teams/findadmin', requestObj)
-			.then((res) => {
-				console.log(res);
-				setAdmin(res.data.username);
-				setUserID(res.data.id);
-			})
-			.catch((err) => {
-				console.log(`Error: ${err}`);
-			});
-	}, []);
+		if (!authUser || refresh) {
+			const accessToken = Cookies.get('accessToken');
+			const requestObj = {
+				accessToken: accessToken,
+			};
+			axios
+				.post('http://localhost:3009/login/detectUser', requestObj)
+				.then((res) => {
+					console.log(res);
+					setAuthUser(res.data.username);
+					setAuthUserID(res.data.id);
+					setRefresh(false);
+				})
+				.catch((err) => {
+					console.log(`Error: ${err}`);
+				});
+		}
+	});
 
 	const handleTeamName = (e) => {
-		setTeamName(e.target.value);
+		setNewTeamName(e.target.value);
 	};
 
-	const handleSubmit = (e) => {
-		e.preventDefault();
-
-		const newTeam = {
-			teamName: teamName,
-			admin: admin,
-			users: admin,
-		};
-
-		axios
-			.post('http://localhost:3008/teams/add', newTeam)
-			.then((res) => console.log(res))
-			.then(
-				axios.put('http://localhost:3008/users/' + userID, {
-					adminOf: teamName,
-					teams: teamName,
-				})
-			)
-			.then((window.location = '/'))
-			.catch((err) => {
+	const handlePUT = (newID) => {
+		if (newID) {
+			try {
+				axios
+					.put('http://localhost:3008/users/' + authUserID, {
+						adminOf: newTeamName,
+						teams: newTeamName,
+						teamID: newID,
+					})
+					.then((res) => console.log(res))
+					.catch((err) => console.log(err));
+			} catch (err) {
 				console.log(err);
-			});
+			}
+		} else {
+			console.log('No newID');
+		}
+	};
+
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		setRefresh(true);
+		try {
+			const newTeam = {
+				teamName: newTeamName,
+				users: authUser,
+				admin: authUser,
+			};
+			console.log(newTeam);
+
+			axios
+				.post('http://localhost:3008/teams/add', newTeam)
+				.then(async (res) => {
+					console.log(res.data);
+					const newID = await res.data._id;
+					if (newID) {
+						handlePUT(newID);
+					}
+				})
+
+				.catch((err) => {
+					console.log(err);
+				});
+		} catch (err) {
+			console.log(err);
+		}
+		await setTimeout(() => {
+			window.location = '/';
+		}, 500);
 	};
 
 	return (
-		<div>
+		<div className='container'>
 			<br />
-			<h1>Create Team</h1>
+			<h1 className='display-4 text-center'>Create Team</h1>
 			<form>
 				<div className='form-group'>
-					<label>Team Name</label>
 					<input
 						type='text'
 						required
-						value={teamName}
+						value={newTeamName}
 						onChange={handleTeamName}
+						placeholder='Team Name'
 						className='form-control'
 					></input>
 				</div>
-				<div className='form-group'>
+				<div className='form-group text-center'>
 					<button
 						type='submit'
-						className='btn btn-primary'
+						className='btn btn-secondary'
 						onClick={handleSubmit}
 					>
-						Submit
+						Create
 					</button>
 				</div>
 			</form>

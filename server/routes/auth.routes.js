@@ -15,7 +15,6 @@ router.route('/').get((req, res, next) => {
 });
 
 router.route('/verify').post((req, res) => {
-	//grab cookies on client side and send through axios
 	const accessToken = req.body.accessToken;
 	const check = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
 	if (check) {
@@ -26,13 +25,19 @@ router.route('/verify').post((req, res) => {
 });
 
 router.route('/detectUser').post((req, res) => {
-	const accessToken = req.body.accessToken;
-	const payload = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
-	const user = {
-		username: payload.user.username,
-		id: payload.user._id,
-	};
-	res.status(200).json(user);
+	try {
+		const accessToken = req.body.accessToken;
+		const payload = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
+		const user = {
+			username: payload.user.username,
+			id: payload.user._id,
+			teams: payload.user.teams,
+			adminOf: payload.user.adminOf,
+		};
+		res.status(200).json(user);
+	} catch (err) {
+		res.status(400).json(err);
+	}
 });
 
 router.route('/').post((req, res, next) => {
@@ -52,17 +57,6 @@ router.route('/').post((req, res, next) => {
 					if (compare) {
 						const accessToken = generateAccessToken(user);
 						const refreshToken = generateRefreshToken(user);
-
-						// const newToken = new Token({
-						// 	token: refreshToken,
-						// 	user: user,
-						// });
-						// newToken
-						// 	.save()
-						// 	.then(() => console.log('New refresh token created'))
-						// 	.catch((err) => {
-						// 		res.status(400).send(`Error: ${err}`);
-						// 	});
 
 						res
 							.status(202)
@@ -91,11 +85,9 @@ router.route('/token').post((req, res, next) => {
 		const accessToken = generateAccessToken();
 		res.json({ accessToken: accessToken });
 	});
-}); //works
+});
 
 router.route('/logout').delete((req, res, next) => {
-	//want to delete the refresh token from the database using this route // set this up when the DB can store refresh tokens
-	//need to make a model for refresh tokens (with expiry date) and add CRUD operations for other routes to the database to store/delete these refresh tokens
 	const dbtoken = Token.findOne({ token: req.body.token });
 	Token.findByIdAndDelete(dbtoken._id)
 		.then(() => res.status(200).json('Logged out'))

@@ -1,6 +1,7 @@
 const router = require('express').Router();
 let Team = require('../models/team.model');
 const jwt = require('jsonwebtoken');
+const { route } = require('./user.routes');
 
 router.route('/').get((req, res, next) => {
 	Team.find()
@@ -11,6 +12,7 @@ router.route('/').get((req, res, next) => {
 router.route('/findadmin').post((req, res) => {
 	//find user via payload through jwt.verify
 	//set the user as admin for the newly created team
+	// Set to delete -> overlaps with detectUser from auth.routes
 	try {
 		const accessToken = req.body.accessToken;
 		const payload = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
@@ -26,7 +28,7 @@ router.route('/findadmin').post((req, res) => {
 
 router.route('/:id').get((req, res, next) => {
 	Team.findById(req.params.id)
-		.then((user) => res.json(user))
+		.then((team) => res.json(team))
 		.catch((err) => res.status(400).json(`Error: ${err}`));
 });
 
@@ -41,10 +43,10 @@ router.route('/add').post((req, res, next) => {
 			admin,
 			users,
 		});
-		newTeam
-			.save()
-			.then(() => res.json(`New team created!`))
-			.catch((err) => res.status(400).json(err));
+		newTeam.save().then((savedTeam) => {
+			console.log(savedTeam);
+			res.status(200).json(savedTeam);
+		});
 	} catch (err) {
 		res.status(400).send(err);
 	}
@@ -61,8 +63,6 @@ router.route('/messages').post(verifyToken, (req, res, next) => {
 			});
 		}
 	});
-	// IT WORKS WHEN USING THE AUTHORIZATION IN POSTMAN
-	// do we need this in user.routes or team.routes?
 });
 
 router.route('/:id').put((req, res, next) => {
@@ -75,7 +75,6 @@ router.route('/:id').put((req, res, next) => {
 
 	User.findOneAndUpdate({ _id: req.params.id }, updates, { new: true })
 		.then((user) => res.json(user))
-		.then(() => res.json('Team name has been updated'))
 		.catch((err) => res.status(400).json(`Error: ${err}`));
 });
 

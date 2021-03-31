@@ -8,8 +8,6 @@ const teamSchema = new Schema({
 	},
 	users: {
 		type: Array,
-		unique: true,
-		index: true,
 	},
 	admin: {
 		type: String,

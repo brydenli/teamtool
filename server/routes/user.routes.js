@@ -11,8 +11,6 @@ verifyToken = (req, res, next) => {
 	req.token = token;
 	if (req.token === null) return res.sendStatus(401);
 	next();
-
-	//need this in user.routes or team.routes?
 };
 
 router.route('/').get((req, res, next) => {
@@ -29,7 +27,7 @@ router.route('/:id').get((req, res, next) => {
 
 router.route('/teamlist/:id').get((req, res, next) => {
 	User.findById(req.params.id).then((response) => {
-		const teams = response.teams;
+		const teams = response.data.teams;
 		res.status(200).json(teams);
 	});
 });
@@ -71,7 +69,6 @@ router.route('/messages').post(verifyToken, (req, res, next) => {
 			});
 		}
 	});
-	//need this in user.routes or team.routes?
 });
 
 router.route('/:id').put((req, res, next) => {
@@ -81,6 +78,7 @@ router.route('/:id').put((req, res, next) => {
 			$addToSet: {
 				adminOf: [req.body.adminOf],
 				teams: [req.body.teams],
+				teamID: [req.body.teamID],
 			},
 		},
 		{ new: true }

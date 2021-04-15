@@ -1,0 +1,15 @@
+.vertical-nav {
+	min-width: 17rem;
+	width: 17rem;
+	height: 100vh;
+	position: fixed;
+	top: 4.7%;
+	left: 0;
+	box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.page-content {
+	width: calc(100% - 17rem);
+	margin-left: 17rem;
+	transition: all 0.4s;
+}

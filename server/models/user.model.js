@@ -42,6 +42,10 @@ const userSchema = new Schema({
 	teamID: {
 		type: Array,
 	},
+
+	notifications: {
+		type: Array,
+	},
 });
 
 const Users = mongoose.model('Users', userSchema);

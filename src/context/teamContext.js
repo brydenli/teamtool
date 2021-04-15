@@ -10,6 +10,7 @@ export const TeamContextProvider = ({ children }) => {
 	const [teamMembers, setTeamMembers] = useState([]);
 	const [teamObj, setTeamObj] = useState([]);
 	const [selectedTeam, setSelectedTeam] = useState([]);
+	const [teamName, setTeamName] = useState('');
 
 	return (
 		<TeamContext.Provider
@@ -28,12 +29,11 @@ export const TeamContextProvider = ({ children }) => {
 				setTeamObj,
 				selectedTeam,
 				setSelectedTeam,
+				teamName,
+				setTeamName,
 			}}
 		>
 			{children}
 		</TeamContext.Provider>
 	);
 };
-//team ID should be held in the user -> how to change model and routes to get team IDs?
-//teamContext is to hold the team state of the application at the global level
-//This well help team functionalities work without having to figure out which team we're trying to speak to for each request

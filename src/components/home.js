@@ -51,29 +51,12 @@ const Home = () => {
 					setAuthUser(res.data.username);
 					setAuthUserID(res.data.id);
 				})
-				// .then(() => {
-				// 	const teamList = { authUserTeams };
-				// 	axios
-				// 		.post('http://localhost:3008/teams/team-data', teamList)
-				// 		.then((res) => {
-				// 			console.log(res);
-				// 		});
-				// })
 				.catch((err) => {
 					console.log(`Error: ${err}`);
 				});
 		}
 
 		if (authUserID && refresh) {
-			// axios
-			// 	.put('http://localhost:3008/users/' + authUserID, {
-			// 		adminOf: newTeamName,
-			// 		teams: newTeamName,
-			// 		teamID: newTeamID,
-			// 	})
-			// 	.then((res) => console.log(res))
-			// 	.catch((err) => console.log(err));
-
 			axios
 				.get('http://localhost:3008/users/' + authUserID)
 				.then((res) => {
@@ -108,7 +91,7 @@ const Home = () => {
 
 				<h1 className='text-center display-1'>Home</h1>
 				<h6 className='text-center'> Welcome {authUser}</h6>
-				<h6 className='text-center'>authUserID: {authUserID}</h6>
+				<h6 className='text-center'>User ID: {authUserID}</h6>
 				<h6 className='text-center'>refresh: {refresh ? 'true' : 'false'}</h6>
 				<h6 className='text-center'>newTeamName: {newTeamName}</h6>
 				<h6 className='text-center'>newTeamID: {newTeamID}</h6>

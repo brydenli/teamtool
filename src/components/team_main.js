@@ -110,19 +110,32 @@ const Team_Main = () => {
 		});
 	};
 
-	const handleSelectedTeam = async (id, teamName) => {
+	const handleSelectedTeam = (id, teamName) => {
 		const teamObj = {
 			id: id,
 			teamName: teamName,
 		};
 		setSelectedTeam({ teamObj });
-		await setTimeout(() => {
-			history.push('/team/detail/' + id);
-		});
+		const requestObj = {
+			teamid: id,
+			user: authUser,
+		};
+
+		axios
+			.post('http://localhost:3008/teams/teamauth', requestObj)
+			.then((res) => {
+				if (res.data !== 'accepted') {
+					window.alert('Not Authorized');
+					window.location = '/';
+				} else {
+					console.log('authorized');
+					setTimeout(() => {
+						history.push('/team/detail/' + id);
+					});
+				}
+			});
 	};
 
-	//fix unique key error in the table using the team context -> store team IDs
-	//should add table headers, team admin, and number of team members into team main table
 	return (
 		<div>
 			<br />
@@ -150,6 +163,7 @@ const Team_Main = () => {
 					</div>
 				) : (
 					<div className='list-group container'>
+						<br />
 						<table className='table table-hover table-striped table-bordered'>
 							<thead className='thead-dark'>
 								<tr>
@@ -182,9 +196,9 @@ const Team_Main = () => {
 				<button onClick={handleCreateTeamButton} className='btn btn-secondary'>
 					Create New Team
 				</button>
-				<h6>Refresh: {refresh ? 'true' : 'false'}</h6>
+				{/* <h6>Refresh: {refresh ? 'true' : 'false'}</h6>
 				<h6>authUser: {authUser}</h6>
-				<h6>authUserID: {authUserID}</h6>
+				<h6>authUserID: {authUserID}</h6> */}
 			</div>
 		</div>
 	);

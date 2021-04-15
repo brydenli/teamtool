@@ -13,26 +13,26 @@ verifyToken = (req, res, next) => {
 	next();
 };
 
-router.route('/').get((req, res, next) => {
+router.route('/').get((req, res) => {
 	User.find()
 		.then((user) => res.json(user))
 		.catch((err) => res.status(400).json(`Error: ${err}`));
 });
 
-router.route('/:id').get((req, res, next) => {
+router.route('/:id').get((req, res) => {
 	User.findById(req.params.id)
 		.then((user) => res.json(user))
 		.catch((err) => res.status(400).json(`Error: ${err}`));
 });
 
-router.route('/teamlist/:id').get((req, res, next) => {
+router.route('/teamlist/:id').get((req, res) => {
 	User.findById(req.params.id).then((response) => {
 		const teams = response.data.teams;
 		res.status(200).json(teams);
 	});
 });
 
-router.route('/add').post(async (req, res, next) => {
+router.route('/add').post(async (req, res) => {
 	try {
 		const hashedPassword = await bcrypt.hash(req.body.password, 10);
 		const username = req.body.username;
@@ -58,7 +58,7 @@ router.route('/add').post(async (req, res, next) => {
 	}
 });
 
-router.route('/messages').post(verifyToken, (req, res, next) => {
+router.route('/messages').post(verifyToken, (req, res) => {
 	jwt.verify(req.token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
 		if (err) {
 			return res.status(403).json(`Error: ${err}`);
@@ -71,7 +71,7 @@ router.route('/messages').post(verifyToken, (req, res, next) => {
 	});
 });
 
-router.route('/:id').put((req, res, next) => {
+router.route('/:id').put((req, res) => {
 	User.findOneAndUpdate(
 		{ _id: req.params.id },
 		{
@@ -87,7 +87,81 @@ router.route('/:id').put((req, res, next) => {
 		.catch((err) => res.status(400).json(`Error: ${err}`));
 });
 
-router.route('/:id').delete((req, res, next) => {
+router.route('/invitation/:id').put((req, res) => {
+	User.findOneAndUpdate(
+		{ _id: req.params.id },
+		{
+			$addToSet: {
+				notifications: { teamID: req.body.teamID, teamName: req.body.teamName },
+			},
+		},
+		{ new: true }
+	)
+		.then(() => res.status(200).json('Invite Sent'))
+		.catch((err) => res.status(400).json(`Error: ${err}`));
+});
+
+router.route('/addteam/:id').put((req, res) => {
+	User.findOneAndUpdate(
+		{ _id: req.params.id },
+		{
+			$addToSet: {
+				teams: [req.body.teamName],
+				teamID: [req.body.teamID],
+			},
+		},
+		{ new: true, multi: true }
+	)
+		.then(() => {
+			User.findOneAndUpdate(
+				{ _id: req.params.id },
+				{
+					$pullAll: {
+						notifications: { teamName: req.body.teamName },
+					},
+				},
+				{ new: true, multi: true }
+			);
+		})
+		.then(() => res.status(200).json('Invite accepted'))
+		.catch((err) => {
+			console.log(err);
+			res.status(400).json(err);
+		});
+});
+
+router.route('/decline/:id').put((req, res) => {
+	User.findOneAndUpdate(
+		{ _id: req.params.id },
+		{
+			$pull: {
+				notifications: { $elemMatch: { teamName: req.body.teamName } },
+			},
+		},
+		{ new: true }
+	)
+		.then(() => res.status(200).json('Invite declined'))
+		.catch((err) => res.status(400).json(err));
+});
+
+router.route('/leave-team').put((req, res) => {
+	User.findByIdAndUpdate(
+		req.body.userID,
+		{
+			$pull: {
+				teams: req.body.teamName,
+				teamID: req.body.teamID,
+			},
+		},
+		{ new: true }
+	)
+		.then(() => {
+			res.status(200).json('Left Team');
+		})
+		.catch((err) => console.log(err));
+});
+
+router.route('/:id').delete((req, res) => {
 	User.findByIdAndDelete(req.params.id)
 		.then(() => res.json('User has been deleted'))
 		.catch((err) => res.status(404).json(`Error: ${err}`));

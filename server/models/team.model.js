@@ -12,6 +12,15 @@ const teamSchema = new Schema({
 	admin: {
 		type: String,
 	},
+	tasks: {
+		type: Array,
+	},
+	tasks_inProgress: {
+		type: Array,
+	},
+	tasks_completed: {
+		type: Array,
+	},
 });
 
 const Team = mongoose.model('Team', teamSchema);

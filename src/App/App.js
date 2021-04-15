@@ -9,6 +9,11 @@ import Team_Main from '../components/team_main';
 import { AuthUserProvider } from '../context/authUserContext';
 import { TeamContextProvider } from '../context/teamContext';
 import Team from '../components/team';
+import TextChannel from '../components/team_textchannel';
+import TeamTasks from '../components/team_tasks';
+import TeamSettings from '../components/team_settings';
+import Notifications from '../components/notification';
+import NewTask from '../components/create-new-task';
 
 function App() {
 	return (
@@ -22,7 +27,12 @@ function App() {
 						<Route path='/create-user' component={CreateUser} />
 						<Route path='/create-team' component={CreateTeam} />
 						<Route path='/team' exact component={Team_Main} />
-						<Route path='/team/detail/:id' component={Team} />
+						<Route path='/team/detail/:id' exact component={Team} />
+						<Route path='/team/channel/:id' component={TextChannel} />
+						<Route path='/team/tasks/:id' component={TeamTasks} />
+						<Route path='/team/settings/:id' component={TeamSettings} />
+						<Route path='/notifications' component={Notifications} />
+						<Route path='/team/newtask/:id' component={NewTask} />
 					</Switch>
 				</Router>
 			</TeamContextProvider>

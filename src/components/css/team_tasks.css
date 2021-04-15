@@ -1,0 +1,18 @@
+.center-table-1 {
+	position: absolute;
+	left: 30%;
+	width: 60%;
+	margin-top: 2%;
+	background-color: rgb(211, 244, 255);
+}
+
+.table-container {
+	display: flex;
+}
+
+.task-button {
+	display: flex;
+	justify-content: center;
+	margin-top: 15%;
+	margin-left: 13%;
+}

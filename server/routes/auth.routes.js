@@ -6,8 +6,6 @@ const jwt = require('jsonwebtoken');
 const Cookies = require('js-cookie');
 const express = require('express');
 
-//server just for login, logout, refresh tokens
-
 router.route('/').get((req, res, next) => {
 	Token.find()
 		.then((tokens) => res.json(tokens))
@@ -40,7 +38,7 @@ router.route('/detectUser').post((req, res) => {
 	}
 });
 
-router.route('/').post((req, res, next) => {
+router.route('/').post((req, res) => {
 	try {
 		let user;
 		User.find({ username: req.body.username })
@@ -74,7 +72,7 @@ router.route('/').post((req, res, next) => {
 	}
 });
 
-router.route('/token').post((req, res, next) => {
+router.route('/token').post((req, res) => {
 	const refreshToken = req.body.token;
 	if (refreshToken === null) return res.status(401);
 	const token = Token.findOne({ token: refreshToken });
@@ -87,7 +85,7 @@ router.route('/token').post((req, res, next) => {
 	});
 });
 
-router.route('/logout').delete((req, res, next) => {
+router.route('/logout').delete((req, res) => {
 	const dbtoken = Token.findOne({ token: req.body.token });
 	Token.findByIdAndDelete(dbtoken._id)
 		.then(() => res.status(200).json('Logged out'))

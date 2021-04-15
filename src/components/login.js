@@ -3,8 +3,6 @@ import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-// require('dotenv').config();
-
 const Login = () => {
 	let history = useHistory();
 	const [username, setUsername] = useState('');

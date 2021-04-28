@@ -1,5 +1,5 @@
 # teamtool
-team productivity tool built using React, Express.js, Node.js, MongoDB Atlas
+Team productivity tool built using React, Express.js, Node.js, MongoDB Atlas
 
 ## Application Features:
 1. Authentication using JSON Web Tokens and Cookies

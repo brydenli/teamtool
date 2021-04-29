@@ -11,3 +11,6 @@ Team productivity tool built using React, Express.js, Node.js, MongoDB Atlas
 
 ## Project Goal:
 Built as a proof of concept to understand authentication systems
+
+## Demo: 
+https://www.youtube.com/watch?v=PNvRQkWeMM8&ab_channel=project-portfolio-bmli
